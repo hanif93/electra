@@ -1,0 +1,9 @@
+{
+    "name": "hanif/electra",
+    "description": "API for electra",
+    "type": "library",
+    "require": {
+        "alash3al/horus": "^13.0"
+    },
+    "minimum-stability": "dev"
+}
