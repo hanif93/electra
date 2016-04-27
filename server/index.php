@@ -13,6 +13,7 @@ $app->on("/", function() {
 });
 
 /*get all users*/
+
 $app->on("GET /users", function() {
 
     $dbh = db::connect();
@@ -28,6 +29,7 @@ $app->on("GET /users", function() {
 });
 
 /*fetch username and password*/
+
 $app->on("POST /login", function() {
 
     // $this->json($this->body); exit;
@@ -57,13 +59,18 @@ $app->on("POST /login", function() {
 
 
 /*create devices*/
+
 $app->on("POST /devices", function() {
 
     $dbh = db::connect();
-    $sql = "INSERT INTO devices(name,description) VALUES ('','')";
+    $sql = "INSERT INTO devices(name,description) VALUES (:name,:description)";
+    $param1 = [
+        ":name"=> $this->body->name,
+        ":description"=> $this->body->descrption,
+    ];
 
     $query = $dbh->prepare($sql);
-    $query->execute();
+    $query->execute($param1);
 
     $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -71,16 +78,21 @@ $app->on("POST /devices", function() {
 
 });
 
-/*get devices*/
+/*update devices*/
+
 $app->on("PUT /devices", function() {
 
     $dbh = db::connect();
-    $sql = "UPDATE devices SET status=1 WHERE name='L12'";
+    $sql = "UPDATE devices SET status=:status WHERE id=:id";
+    $param1 = [
+        ":status"=> $this->body->status,
+        ":id"=> $this->body->id,
+    ];
 
     $query = $dbh->prepare($sql);
-    $query->execute();
+    $query->execute($param1);
 
-    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $result = $query->fetch(PDO::FETCH_ASSOC);
 
     $this->json($result)->end();
 
