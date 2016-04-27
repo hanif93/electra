@@ -11,14 +11,12 @@
         $scope.$on('user:logout', clearStatus);
 
         DeviceFactory.query(function(response) {
-            console.info(response)
             response.forEach(function(v) {
                 v.status = (v.status === "0") ? false : true;
                 v.in_repair = (v.in_repair === "0") ? false : true;
             });
 
             vm.items = response;
-            console.log(response)
         });
 
         function changeStatus(data) {
@@ -30,24 +28,23 @@
             copy.status = (copy.status) ? 1 : 0;
             copy.in_repair = (copy.in_repair) ? 1 : 0;
 
-            ARDN.get({ pin: ardnID + ardnStatus }, updateDB, updateDB)
+            ARDN.get({ pin: ardnID + ardnStatus }, __updateDB, __updateDB)
+        }
 
-            function updateDB() {
-                DeviceFactory.changeStatus(copy, function(r) {
-                    $ionicPopup.show({
-                        title: 'Notification',
-                        subTitle: (r) ? 'Device status changed' : 'Status change failed',
-                        buttons: [ { text: 'OK', type: 'button-dark' }]
-                    })
+        function __updateDB() {
+            DeviceFactory.changeStatus(copy, function(r) {
+                $ionicPopup.show({
+                    title: 'Notification',
+                    subTitle: (r) ? 'Device status changed' : 'Status change failed',
+                    buttons: [ { text: 'OK', type: 'button-dark' }]
                 })
-            }
-
+            })
         }
 
         function clearStatus() {
             vm.items.forEach(function(v) {
                 v.status = "0";
-                DeviceFactory.changeStatus(v);
+                changeStatus(v);
             });
         }
     }

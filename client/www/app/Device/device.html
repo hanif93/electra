@@ -1,29 +1,43 @@
-
+<style>
+    .item { position: relative }
+    .float-right {
+        position: absolute;
+        right: 10px;
+        top: 40%;
+        transform: translateY(-50%);
+    }
+    .float-right > span {
+        position: relative;
+        right: -45px;
+        top: 10px;
+        font-size: 0.8em;
+    }
+    .disabled { background: rgba(0,0,0,0.5); }
+    .disabled img { opacity: 0.3 }
+</style>
 
 <ion-view view-title="Device">
     <ion-content>
         <div class="list">
-            <div class="item item-thumbnail-left" ng-repeat="lampu in device.items">
+            <div class="item item-thumbnail-left" href="#" ng-repeat="lampu in device.items" ng-class="{ 'disabled': root.isAdmin != 1 && lampu.in_repair == 1}">
 
                 <img ng-src="{{ lampu.image_url }}">
                 <h2>{{ lampu.name }}</h2>
                 <p>{{ lampu.description }}</p>
 
-                <label class="toggle toggle-calm" >
+                <label class="toggle toggle-calm" ng-hide="root.isAdmin != 1 && lampu.in_repair == 1">
                     <input type="checkbox" ng-model="lampu.status" ng-change="device.changeStatus(lampu)">
-                    <div class="track"
+                    <div class="track">
                         <div class="handle"></div>
                     </div>
                 </label>
-
-                <label class="float-right" ng-if="root.isAdmin == '1'">
+                <label class="float-right" ng-if="root.isAdmin == 1">
                     <span>In Repair</span>
                     <div class="checkbox checkbox-input-hidden checkbox-assertive">
                         <input type="checkbox" ng-model="lampu.in_repair" ng-change="device.changeStatus(lampu)">
                         <i class="checkbox-icon"></i>
                     </div>
                 </label>
-
             </div>
         </div>
     </ion-content>
