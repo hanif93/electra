@@ -8,12 +8,7 @@
 
     function Routes($stateProvider, $urlRouterProvider) {
         $stateProvider
-            .state('tabs', {
-                url: '/electra',
-                // abstract: true,
-                templateUrl: '/app/_config/tabs.html'
-            })
-            .state('tabs.device', {
+            .state('device', {
                 url: '/device',
                 views: {
                     'tab-device': {
@@ -24,7 +19,7 @@
                 }
             })
 
-        $urlRouterProvider.otherwise('/electra/device');
+        $urlRouterProvider.otherwise('/device');
     }
 
     function init($ionicPlatform) {
