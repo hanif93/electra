@@ -4,20 +4,33 @@
         .module('Electra')
         .config(Routes)
         .run(init)
-        .controller('rootCtrl', rootCtrl);
+        .controller('rootCtrl', rootCtrl)
+        .factory('Login', Login);
 
     function Routes($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('device', {
                 url: '/device',
                 views: {
-                    'tab-device': {
+                    'device': {
                         templateUrl: '/app/Device/device.html',
                         controller: 'deviceCtrl',
                         controllerAs: 'device'
                     }
                 }
             })
+
+            .state('map', {
+                url: '/map',
+                views: {
+                    'map': {
+                        templateUrl: '/app/Map/map.html',
+                        controller: 'mapCtrl',
+                        controllerAs: 'map'
+                    }
+                }
+            })
+
 
         $urlRouterProvider.otherwise('/device');
     }
@@ -38,8 +51,33 @@
         });
     }
 
-    function rootCtrl(){
-        console.log("root")
+    function rootCtrl($ionicModal, Login, $scope) {
+        var vm = this;
+        vm.login = login;
+        vm.loggedIn = false;
+
+        $ionicModal.fromTemplateUrl('/app/Login/login.html', {
+            scope: vm,
+            animation: 'slide-in-up'
+        }).then(function(modal) {
+            vm.modal = modal;
+        });
+
+        if (!vm.loggedIn) {
+            vm.modal.show();
+        }
+
+        function login(data) {
+            Login.save(data, function(r) {
+                if (r.success) {
+                    vm.loggedIn = true;
+                }
+            })
+        }
+    }
+
+    function Login($resource) {
+        return $resource(ELECTRA.BASE + '/login')
     }
 
 })();

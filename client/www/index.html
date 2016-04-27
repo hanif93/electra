@@ -11,25 +11,36 @@
     <script src="lib/angular-resource/angular-resource.min.js"></script>
     <script src="cordova.js"></script>
 
+    <script>
+        var ELECTRA = {
+            BASE: 'http://localhost'
+        }
+    </script>
+
     <script src="app/_config/electra.modules.js"></script>
     <script src="app/_config/electra.js"></script>
 
     <script src="app/Device/device.js"></script>
     <script src="app/Device/device.factory.js"></script>
 
+    <script src="app/Map/map.js"></script>
+
 
 </head>
 <body ng-app="Electra" ng-controller="rootCtrl as root">
 
-    <ion-nav-bar class="bar-energized">
+    <ion-nav-bar class="bar-dark">
         <ion-nav-back-button>
         </ion-nav-back-button>
     </ion-nav-bar>
 
-    <ion-tabs class="tabs-icon-top tabs-color-active-positive">
+    <ion-tabs class="tabs-icon-top tabs-background-dark tabs-color-light">
       <!-- Controller Tab -->
-        <ion-tab title="Controller" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" ui-sref="tabs.device">
-            <ion-nav-view name="tab-device"></ion-nav-view>
+        <ion-tab title="Device Controller" icon-off="ion-ios-lightbulb-outline" icon-on="ion-ios-lightbulb" ui-sref="device">
+            <ion-nav-view name="device"></ion-nav-view>
+        </ion-tab>
+        <ion-tab title="Device Map" icon-off="ion-ios-information-outline" icon-on="ion-ios-information" ui-sref="map">
+            <ion-nav-view name="map"></ion-nav-view>
         </ion-tab>
     </ion-tabs>
 

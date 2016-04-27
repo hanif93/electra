@@ -1,5 +1,18 @@
 <ion-view view-title="Device">
-    <ion-content class="padding">
-        Hello
+    <ion-content>
+        <div class="list">
+            <div class="item item-thumbnail-left" href="#" ng-repeat="lampu in device.items">
+                <img ng-src="{{ lampu.image_url }}">
+                <h2>{{ lampu.name }}</h2>
+                <p>{{ lampu.description }}</p>
+
+                <label class="toggle toggle-calm">
+                    <input type="checkbox" ng-model="lampu.status" ng-change="device.changeStatus(lampu)">
+                    <div class="track">
+                        <div class="handle"></div>
+                    </div>
+                </label>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

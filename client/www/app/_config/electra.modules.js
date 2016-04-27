@@ -4,7 +4,8 @@
         .module('Electra', [
             'ionic',
             'ngResource',
-            'Electra.device'
+            'Electra.device',
+            'Electra.map'
         ]);
 
 })()

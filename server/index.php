@@ -5,6 +5,13 @@ require "vendor/autoload.php";
 $app = new Horus;
 $app->autoload("classes");
 
+$app->set([
+    "Access-Control-Allow-Origin" => "*",
+    "Access-Control-Allow-Credentials" => "false",
+    "Access-Control-Allow-Methods" => "OPTIONS, GET, POST, PUT, DELETE",
+    "Access-Control-Allow-Headers" => "Content-Type"
+]);
+
 // $app->on("", function() {});
 $app->on("/", function() {
 
@@ -34,15 +41,15 @@ $app->on("POST /login", function() {
 
     // $this->json($this->body); exit;
 
-    if (!$this->body->username && !$this->body->password) {
+    if (!$this->body['username'] && !$this->body['password']) {
         $this->json(["message"=> "Failed to login"])->end();
     }
 
     $dbh = db::connect();
     $sql = "SELECT * from users WHERE username=:username AND password=:password";
     $param = [
-        ":username"=> $this->body->username,
-        ":password"=> $this->body->password,
+        ":username"=> $this->body['username'],
+        ":password"=> $this->body['password'],
     ];
 
     $query = $dbh->prepare($sql);
@@ -51,7 +58,7 @@ $app->on("POST /login", function() {
     $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
     if($result) {
-        $this->json($result)->end();
+        $this->json(["success"=> true])->end();
     } else {
          $this->json(["message"=> "Wrong username/password"])->end();
     }
@@ -82,17 +89,19 @@ $app->on("POST /devices", function() {
 
 $app->on("PUT /devices", function() {
 
+    // TODO: Check exist status
+
     $dbh = db::connect();
     $sql = "UPDATE devices SET status=:status WHERE id=:id";
     $param1 = [
-        ":status"=> $this->body->status,
-        ":id"=> $this->body->id,
+        ":status"=> $this->body['status'],
+        ":id"=> $this->body['id'],
     ];
 
     $query = $dbh->prepare($sql);
     $query->execute($param1);
 
-    $result = $query->fetch(PDO::FETCH_ASSOC);
+    $result = $query->rowCount();
 
     $this->json($result)->end();
 
