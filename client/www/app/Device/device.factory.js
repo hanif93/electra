@@ -2,7 +2,8 @@
 
     angular
         .module('Electra.device')
-        .factory('DeviceFactory', DeviceFactory);
+        .factory('DeviceFactory', DeviceFactory)
+        .factory('ARDN', ARDN);
 
     function DeviceFactory($resource) {
         return $resource(ELECTRA.BASE + '/devices', {}, {
@@ -10,5 +11,7 @@
         });
     }
 
-
+    function ARDN($resource) {
+        return $resource(ELECTRA.ARDN);
+    }
 })()

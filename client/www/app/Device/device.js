@@ -4,7 +4,7 @@
         .module('Electra.device', [])
         .controller('deviceCtrl', deviceCtrl);
 
-    function deviceCtrl(DeviceFactory, $ionicPopup, $scope) {
+    function deviceCtrl(DeviceFactory, ARDN, $ionicPopup, $scope) {
         var vm = this;
         vm.changeStatus = changeStatus;
 
@@ -23,17 +23,25 @@
 
         function changeStatus(data) {
             var copy = {};
+            var ardnID = data.name.substr(1);
+            var ardnStatus = (data.status) ? '255' : '000';
+
             angular.copy(data, copy)
             copy.status = (copy.status) ? 1 : 0;
             copy.in_repair = (copy.in_repair) ? 1 : 0;
 
-            DeviceFactory.changeStatus(copy, function(r) {
-                $ionicPopup.show({
-                    title: 'Notification',
-                    subTitle: (r) ? 'Device status changed' : 'Status change failed',
-                    buttons: [ { text: 'OK', type: 'button-dark' }]
+            ARDN.get({ pin: ardnID + ardnStatus }, updateDB, updateDB)
+
+            function updateDB() {
+                DeviceFactory.changeStatus(copy, function(r) {
+                    $ionicPopup.show({
+                        title: 'Notification',
+                        subTitle: (r) ? 'Device status changed' : 'Status change failed',
+                        buttons: [ { text: 'OK', type: 'button-dark' }]
+                    })
                 })
-            })
+            }
+
         }
 
         function clearStatus() {
