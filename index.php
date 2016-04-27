@@ -12,7 +12,7 @@ $app->on("/", function() {
 
 });
 
-//get all users
+/*get all users*/
 $app->on("GET /users", function() {
 
     $dbh = db::connect();
@@ -27,7 +27,7 @@ $app->on("GET /users", function() {
 
 });
 
-//create new user
+/*fetch username and password*/
 $app->on("POST /login", function() {
 
     // $this->json($this->body); exit;
@@ -53,6 +53,54 @@ $app->on("POST /login", function() {
     } else {
          $this->json(["message"=> "Wrong username/password"])->end();
     }
+});
+
+
+/*create devices*/
+$app->on("POST /devices", function() {
+
+    $dbh = db::connect();
+    $sql = "INSERT INTO devices(name,description) VALUES ('','')";
+
+    $query = $dbh->prepare($sql);
+    $query->execute();
+
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $this->json($result)->end();
+
+});
+
+/*get devices*/
+$app->on("PUT /devices", function() {
+
+    $dbh = db::connect();
+    $sql = "UPDATE devices SET status=1 WHERE name='L12'";
+
+    $query = $dbh->prepare($sql);
+    $query->execute();
+
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $this->json($result)->end();
+
+});
+
+
+
+/*get devices*/
+$app->on("GET /devices", function() {
+
+    $dbh = db::connect();
+    $sql = "SELECT * from devices";
+
+    $query = $dbh->prepare($sql);
+    $query->execute();
+
+    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    $this->json($result)->end();
+
 });
 
 
