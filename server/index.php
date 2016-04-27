@@ -55,10 +55,10 @@ $app->on("POST /login", function() {
     $query = $dbh->prepare($sql);
     $query->execute($param);
 
-    $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    $result = $query->fetch(PDO::FETCH_OBJ);
 
     if($result) {
-        $this->json(["success"=> true])->end();
+        $this->json(["success"=> true, "data" => $result])->end();
     } else {
          $this->json(["message"=> "Wrong username/password"])->end();
     }
@@ -92,10 +92,11 @@ $app->on("PUT /devices", function() {
     // TODO: Check exist status
 
     $dbh = db::connect();
-    $sql = "UPDATE devices SET status=:status WHERE id=:id";
+    $sql = "UPDATE devices SET status=:status, in_repair=:in_repair WHERE id=:id";
     $param1 = [
         ":status"=> $this->body['status'],
         ":id"=> $this->body['id'],
+        ":in_repair"=> $this->body['in_repair'],
     ];
 
     $query = $dbh->prepare($sql);

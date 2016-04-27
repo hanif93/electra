@@ -51,15 +51,16 @@
         });
     }
 
-    function rootCtrl($ionicModal, Login, $scope) {
+    function rootCtrl($ionicModal, Login, $scope, $ionicPopup, $rootScope) {
         var vm = this;
         vm.login = login;
-        vm.loggedIn = false;
+        vm.logout = logout;
+        vm.isAdmin = (sessionStorage.isAdmin) ? sessionStorage.isAdmin : false;
 
         $ionicModal.fromTemplateUrl('/app/Login/login.html', { scope: $scope }).then(askForLogin);
 
         function askForLogin(modal) {
-            var action = (!vm.loggedIn) ? 'show':'destroy';
+            var action = (!sessionStorage.loggedIn) ? 'show':'remove';
             $scope.modal = modal;
 
             $scope.modal[action]();
@@ -68,9 +69,25 @@
         function login(data) {
             Login.save(data, function(r) {
                 if (r.success) {
-                    vm.loggedIn = true;
+                    sessionStorage.loggedIn = true;
+                    sessionStorage.isAdmin = r.data.role;
+                    vm.isAdmin = r.data.role;
+                    $scope.modal.remove();
+                } else {
+                    $ionicPopup.show({
+                        title: 'Notification',
+                        subTitle: r.message,
+                        buttons: [ { text: 'OK', type: 'button-dark' }]
+                    })
                 }
             })
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            $ionicModal.fromTemplateUrl('/app/Login/login.html', { scope: $scope }).then(askForLogin);
+            $rootScope.$broadcast('user:logout');
+
         }
     }
 
