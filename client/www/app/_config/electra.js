@@ -56,15 +56,13 @@
         vm.login = login;
         vm.loggedIn = false;
 
-        $ionicModal.fromTemplateUrl('/app/Login/login.html', {
-            scope: vm,
-            animation: 'slide-in-up'
-        }).then(function(modal) {
-            vm.modal = modal;
-        });
+        $ionicModal.fromTemplateUrl('/app/Login/login.html', { scope: $scope }).then(askForLogin);
 
-        if (!vm.loggedIn) {
-            vm.modal.show();
+        function askForLogin(modal) {
+            var action = (!vm.loggedIn) ? 'show':'destroy';
+            $scope.modal = modal;
+
+            $scope.modal[action]();
         }
 
         function login(data) {
