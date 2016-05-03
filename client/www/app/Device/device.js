@@ -4,11 +4,23 @@
         .module('Electra.device', [])
         .controller('deviceCtrl', deviceCtrl);
 
-    function deviceCtrl(DeviceFactory, ARDN, $ionicPopup, $scope) {
+    function deviceCtrl(DeviceFactory, ARDN, $ionicPopup, $scope, $rootScope) {
         var vm = this;
         vm.changeStatus = changeStatus;
 
-        $scope.$on('user:logout', clearStatus);
+        $rootScope.$on('user:logout', function() {
+            vm.items.forEach(function(v, k) {
+                if (v.status == 1) {
+                    _turnOff(v.name.substr(1) + '000', k)
+                }
+            })
+
+            function _turnOff(pin, selang) {
+                setTimeout(function() {
+                    ARDN.get({ pin:pin });
+                }, 2500 * parseInt(selang));
+            }
+        })
 
         DeviceFactory.query(function(response) {
             response.forEach(function(v) {
@@ -25,27 +37,26 @@
             var ardnStatus = (data.status) ? '255' : '000';
 
             angular.copy(data, copy)
-            copy.status = (copy.status) ? 1 : 0;
-            copy.in_repair = (copy.in_repair) ? 1 : 0;
+
+            if (copy.in_repair) {
+                ardnStatus = '000';
+                data.status = false;
+                copy.status = false;
+            } else {
+                copy.status = (copy.status) ? 1 : 0;
+            }
 
             ARDN.get({ pin: ardnID + ardnStatus }, __updateDB, __updateDB)
-        }
 
-        function __updateDB() {
-            DeviceFactory.changeStatus(copy, function(r) {
-                $ionicPopup.show({
-                    title: 'Notification',
-                    subTitle: (r) ? 'Device status changed' : 'Status change failed',
-                    buttons: [ { text: 'OK', type: 'button-dark' }]
+            function __updateDB(res) {
+                DeviceFactory.changeStatus(copy, function(r) {
+                    $ionicPopup.show({
+                        title: 'Notification',
+                        subTitle: (r) ? 'Device status changed' : 'Status change failed',
+                        buttons: [ { text: 'OK', type: 'button-dark' }]
+                    })
                 })
-            })
-        }
-
-        function clearStatus() {
-            vm.items.forEach(function(v) {
-                v.status = "0";
-                changeStatus(v);
-            });
+            }
         }
     }
 

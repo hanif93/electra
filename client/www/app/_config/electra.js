@@ -73,6 +73,7 @@
                     sessionStorage.isAdmin = r.data.role;
                     vm.isAdmin = r.data.role;
                     $scope.modal.remove();
+                    location.reload()
                 } else {
                     $ionicPopup.show({
                         title: 'Notification',
@@ -86,7 +87,16 @@
         function logout() {
             sessionStorage.clear();
             $ionicModal.fromTemplateUrl('/app/Login/login.html', { scope: $scope }).then(askForLogin);
-            $rootScope.$broadcast('user:logout');
+
+            Login.get();
+
+            $rootScope.$broadcast('user:logout')
+
+            $ionicPopup.show({
+                        title: 'Notification',
+                        subTitle: 'successful logout',
+                        buttons: [ { text: 'OK', type: 'button-dark' }]
+                    })
 
         }
     }
